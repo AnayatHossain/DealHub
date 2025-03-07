@@ -1,3 +1,5 @@
+import 'package:deal_hub/screens/main_screen.dart';
+import 'package:deal_hub/screens/setting/choose_language_screen.dart';
 import 'package:deal_hub/screens/splash_screen.dart';
 import 'package:deal_hub/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,8 @@ class DealHub extends StatelessWidget {
       title: 'DealHub',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: SplashScreen(),
+       // home: SplashScreen(),
+      home: MainScreen(),
     );
   }
 }

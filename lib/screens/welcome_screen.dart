@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 import '../widgets/gradient_button.dart';
+import 'authentication/login_screen.dart';
+import 'authentication/signup_screen.dart';
+
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -75,11 +78,11 @@ class WelcomeScreen extends StatelessWidget {
                   GradientButton(
                     text: "Get Started",
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => SignUpScreen()),
-                      //);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignUpScreen()),
+                      );
                     },
                   ),
                   SizedBox(height: 12),
@@ -116,10 +119,12 @@ class WelcomeScreen extends StatelessWidget {
                         //foregroundColor: Colors.white,
                       ),
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => LoginScreen())),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        );
                       },
                       child: Text(
                         "Login",
