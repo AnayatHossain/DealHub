@@ -154,7 +154,7 @@ class _MainScreenState extends State<MainScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: Text(
-                  "4",
+                  "3",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 10,

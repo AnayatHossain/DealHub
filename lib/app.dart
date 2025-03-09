@@ -14,8 +14,7 @@ class DealHub extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
        // home: SplashScreen(),
-        home: MainScreen(),
-      //home: ChooseLanguageScreen(),
+      home: MainScreen(),
     );
   }
 }
