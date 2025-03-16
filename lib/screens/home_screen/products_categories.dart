@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:deal_hub/screens/home_screen/home_data.dart';
+import 'package:deal_hub/data/data.dart';
 import '../../theme/theme.dart';
 
 class ProductsCategories extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:deal_hub/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import 'home_data.dart';
+import '../../data/data.dart';
 
 class SwiperSection extends StatefulWidget {
   const SwiperSection({super.key});

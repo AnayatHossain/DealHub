@@ -3,7 +3,7 @@ import 'package:deal_hub/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'home_data.dart';
+import '../../data/data.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key});

@@ -1,5 +1,7 @@
 import 'package:deal_hub/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../data/data.dart';
 import '../theme/theme.dart';
 import '../widgets/gradient_button.dart';
 
@@ -14,27 +16,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<OnboardingData> _pages = [
-    OnboardingData(
-      title: "Discover Latest Deals",
-      description: "Get access to exclusive discounts and trending deals. "
-          "Save more with our group-buying offers and special promotions!",
-      image: "assets/images/onboarding1.png",
-    ),
-    OnboardingData(
-      title: "Easy Shopping Experience",
-      description: "Enjoy a seamless and hassle-free shopping journey. "
-          "Browse, compare, and purchase your favorite products effortlessly!",
-      image: "assets/images/onboarding2.png",
-    ),
-    OnboardingData(
-      title: "Secure Payments",
-      description:
-          "Shop with confidence using our secure and reliable payment system. "
-          "Your transactions are encrypted and protected at all times!",
-      image: "assets/images/onboarding3.png",
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +25,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           PageView.builder(
             controller: _pageController,
-            itemCount: _pages.length,
+            itemCount: pages.length,
             onPageChanged: (int page) {
               setState(() {
                 _currentPage = page;
               });
             },
             itemBuilder: (context, index) {
-              return OnboardingPage(data: _pages[index]);
+              return OnboardingPage(data: pages[index]);
             },
           ),
           Positioned(
@@ -59,10 +40,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             right: 24,
             child: TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                );
+                Get.to(()=>WelcomeScreen());
               },
               child: Text(
                 "Skip",
@@ -83,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
-                    _pages.length,
+                    pages.length,
                     (index) => AnimatedContainer(
                       duration: Duration(milliseconds: 300),
                       margin: EdgeInsets.symmetric(horizontal: 4),
@@ -129,7 +107,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     if (_currentPage > 0) const SizedBox(width: 16),
                     Expanded(
                       child: GradientButton(
-                        text: _currentPage == _pages.length - 1
+                        text: _currentPage == pages.length - 1
                             ? "Get Started"
                             : "Next",
                         gradient: [
@@ -137,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           AppTheme.primaryColor.withOpacity(0.8),
                         ],
                         onPressed: () {
-                          if (_currentPage < _pages.length - 1) {
+                          if (_currentPage < pages.length - 1) {
                             _pageController.nextPage(
                               duration: Duration(milliseconds: 300),
                               curve: Curves.easeInOut,

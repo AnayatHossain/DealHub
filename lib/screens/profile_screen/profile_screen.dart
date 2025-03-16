@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../theme/theme.dart';
 import '../cart_screen/my_order_screen.dart';
 import '../onboarding_screen.dart';
+import '../setting/choose_language_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -372,7 +373,9 @@ class ProfileScreen extends StatelessWidget {
                                 icon: Icons.settings_outlined,
                                 title: 'Settings',
                                 subtitle: "App settings and preferences",
-                                onTap: () {},
+                                onTap: () {
+                                  Get.to(()=>ChooseLanguageScreen());
+                                },
                                 color: AppTheme.tertiaryColor,
                               ),
                               _buildMenuItem(

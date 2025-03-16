@@ -1,6 +1,8 @@
 import 'package:deal_hub/theme/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/data.dart';
+
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
@@ -10,33 +12,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-  final List<Map<String, dynamic>> messages = [
-    {
-      'message': "Asslamu-Alaikum, there!",
-      'isMe': false,
-      'time': "2:30 PM",
-      'status': "read",
-    },
-    {
-      'message': "Wolaikum-Assalam, How can I help you today?",
-      'isMe': true,
-      'time': "2:31 PM",
-      'status': "read",
-    },
-    {
-      'message': "I have a question about my recent order",
-      'isMe': false,
-      'time': "2:32 PM",
-      'status': "read",
-    },
-    {
-      'message':
-          "Of course! I\'d be happy to help. Could you please provide Order ID.",
-      'isMe': true,
-      'time': "2:30 PM",
-      'status': "read",
-    },
-  ];
+
 
   @override
   Widget build(BuildContext context) {

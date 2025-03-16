@@ -1,6 +1,6 @@
 import 'package:deal_hub/screens/home_screen/product_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:deal_hub/screens/home_screen/home_data.dart';
+import 'package:deal_hub/data/data.dart';
 import 'package:get/get.dart';
 import '../../theme/theme.dart';
 

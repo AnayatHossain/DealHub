@@ -1,4 +1,4 @@
-import 'package:deal_hub/screens/home_screen/home_data.dart';
+import 'package:deal_hub/data/data.dart';
 import 'package:deal_hub/theme/theme.dart';
 import 'package:deal_hub/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,7 @@
 import 'package:deal_hub/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/data.dart';
 import '../../theme/theme.dart';
 
 class ChooseLanguageScreen extends StatefulWidget {
@@ -13,14 +14,6 @@ class ChooseLanguageScreen extends StatefulWidget {
 class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
   String? _selectedLanguage;
 
-  final List<Map<String, String>> _languages = [
-    {'code': 'en', 'name': 'English', 'nativeName': 'English'},
-    {'code': 'bn', 'name': 'Bangle', 'nativeName': 'Bangle'},
-    {'code': 'es', 'name': 'Spanish', 'nativeName': 'Espalier'},
-    {'code': 'fr', 'name': 'French', 'nativeName': 'Français'},
-    {'code': 'de', 'name': 'German', 'nativeName': 'Deutsch'},
-    {'code': 'it', 'name': 'Italian', 'nativeName': 'Italiano'},
-  ];
 
   void _handleLanguageSelection() {
     if (_selectedLanguage != null) {
@@ -67,9 +60,9 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
                     SizedBox(height: 32),
                     ListView.builder(
                       shrinkWrap: true,
-                      itemCount: _languages.length,
+                      itemCount: languages.length,
                       itemBuilder: (context, index) {
-                        final language = _languages[index];
+                        final language = languages[index];
                         final isSelected =
                             language['code'] == _selectedLanguage;
                         return Container(

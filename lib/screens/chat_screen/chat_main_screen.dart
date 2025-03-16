@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../data/data.dart';
 import '../../theme/theme.dart';
 import 'chat_screen.dart';
 
@@ -9,80 +10,6 @@ class ChatMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> chatList = [
-      {
-        'name': 'Anayat Hossain',
-        'lastMessage': 'Asslamu-Alaikum, there!',
-        'time': '2:30 PM',
-        'unreadCount': 2,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': true,
-      },
-      {
-        'name': 'Shajuddin',
-        'lastMessage': 'The package has been delivered',
-        'time': '1:45 PM',
-        'unreadCount': 0,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': false,
-      },
-      {
-        'name': 'Hasan Al Banna',
-        'lastMessage': 'Provide more details for the order',
-        'time': '3:30 PM',
-        'unreadCount': 3,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': true,
-      },
-      {
-        'name': 'Anayat Hossain',
-        'lastMessage': 'Asslamu-Alaikum, there!',
-        'time': '2:30 PM',
-        'unreadCount': 2,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': true,
-      },
-      {
-        'name': 'Shajuddin',
-        'lastMessage': 'The package has been delivered',
-        'time': '1:45 PM',
-        'unreadCount': 0,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': false,
-      },
-      {
-        'name': 'Hasan Al Banna',
-        'lastMessage': 'Provide more details for the order',
-        'time': '3:30 PM',
-        'unreadCount': 3,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': true,
-      },
-      {
-        'name': 'Anayat Hossain',
-        'lastMessage': 'Asslamu-Alaikum, there!',
-        'time': '2:30 PM',
-        'unreadCount': 2,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': true,
-      },
-      {
-        'name': 'Shajuddin',
-        'lastMessage': 'The package has been delivered',
-        'time': '1:45 PM',
-        'unreadCount': 0,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': false,
-      },
-      {
-        'name': 'Hasan Al Banna',
-        'lastMessage': 'Provide more details for the order',
-        'time': '3:30 PM',
-        'unreadCount': 3,
-        'avatar': 'assets/images/profile.JPG',
-        'isOnline': true,
-      },
-    ];
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,

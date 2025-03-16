@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/theme.dart';
-import 'home_data.dart';
+import '../../data/data.dart';
 
 class NewArrivalsSection extends StatelessWidget {
   const NewArrivalsSection({super.key});

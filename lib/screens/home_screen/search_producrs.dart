@@ -1,4 +1,7 @@
+import 'package:deal_hub/screens/home_screen/home_search_screen.dart';
+import 'package:deal_hub/screens/home_screen/search_filter_section.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../theme/theme.dart';
 
@@ -33,17 +36,30 @@ class SearchProducts extends StatelessWidget {
                   //Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen());
                 },
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 16),
                   hintText: "Search Products...",
                   border: InputBorder.none,
                   hintStyle: TextStyle(
                     color: AppTheme.textSecondary,
                   ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: AppTheme.textSecondary,
+                  prefixIcon: IconButton(
+                    onPressed: () {
+                      Get.to(()=>HomeSearchScreen());
+                    },
+                    icon: Icon(
+                      Icons.search,
+                      color: AppTheme.textSecondary,
+                    ),
                   ),
-                  suffixIcon: Icon(Icons.tune,
-                      color: AppTheme.primaryColor),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      showFilterBottomSheet(context);
+                    },
+                    icon: Icon(
+                      Icons.tune,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
                 ),
               ),
             ),
