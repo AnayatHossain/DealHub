@@ -10,10 +10,13 @@ class UseerProfileData extends StatelessWidget {
         CircleAvatar(
           radius: 20,
           backgroundColor: Colors.white.withOpacity(0.2),
-          child: Icon(
-            Icons.location_on_outlined,
-            color: Colors.white,
-            size: 20,
+          child: SizedBox(
+            height: 100,
+            width: 100,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: Image.asset('assets/images/profile.JPG'),
+            ),
           ),
         ),
         SizedBox(width: 12),
@@ -22,14 +25,14 @@ class UseerProfileData extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Deliver to",
+              "Welcome Back!",
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 12,
               ),
             ),
             Text(
-              "Mirpur 1, Bangladesh",
+              "Anayat Hossain",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,

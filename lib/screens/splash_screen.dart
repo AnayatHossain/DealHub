@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:deal_hub/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'onboarding_screen.dart';
 
@@ -72,10 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
 
             Future.delayed(const Duration(milliseconds: 200), () {
               if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-                );
+                Get.offAll(() => OnboardingScreen());
               }
             });
           }
@@ -219,7 +217,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Column(
                     children: [

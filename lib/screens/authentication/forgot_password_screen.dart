@@ -1,9 +1,11 @@
 
 import 'package:deal_hub/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../theme/theme.dart';
 import '../../widgets/gradient_button.dart';
+import 'login_screen.dart';
 import 'otp_verification_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -25,7 +27,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Get.back();
           },
           icon: Icon(
             Icons.arrow_back,
@@ -73,12 +75,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         text: "Recover Password",
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OtpVerificationScreen(),
-                              ),
-                            );
+                            Get.to(()=> OtpVerificationScreen());
                           }
                         },
                       ),
@@ -86,8 +83,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       Center(
                         child: TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
-
+                            Get.to(()=>LoginScreen());
                           },
                           child: Text(
                             "Back to Login",

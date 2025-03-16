@@ -1,6 +1,7 @@
 import 'package:deal_hub/screens/home_screen/featured_product_section.dart';
 import 'package:deal_hub/screens/home_screen/products_categories.dart';
 import 'package:deal_hub/screens/home_screen/search_producrs.dart';
+import 'package:deal_hub/screens/home_screen/swiper_section.dart';
 import 'package:deal_hub/screens/home_screen/useer_profile_data.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,8 @@ import '../../theme/theme.dart';
 import 'new_arivals_section.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,8 @@ class HomeScreen extends StatelessWidget {
                 centerTitle: true,
                 titlePadding:
                     EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                title: UseerProfileData(),
+
+                title: UseerProfileData(), //User Profile Data
                 background: Stack(
                   children: [
                     Positioned(
@@ -65,6 +69,11 @@ class HomeScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: Column(
               children: [
+                SizedBox(height: 12),
+                //Swiper Section
+                SwiperSection(),
+                SizedBox(height: 12),
+                //Search Products
                 SearchProducts(),
                 //Categories
                 ProductsCategories(),

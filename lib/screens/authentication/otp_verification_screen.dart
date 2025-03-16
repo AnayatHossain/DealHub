@@ -1,6 +1,7 @@
 import 'package:deal_hub/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 import '../../widgets/gradient_button.dart';
 
@@ -79,7 +80,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Get.back();
           },
           icon: Icon(
             Icons.arrow_back,

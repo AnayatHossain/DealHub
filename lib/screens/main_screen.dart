@@ -1,9 +1,9 @@
 import 'package:deal_hub/screens/profile_screen/profile_screen.dart';
+import 'package:deal_hub/screens/wish_list_screen/wish_list_screen.dart';
 import 'package:flutter/material.dart';
-
 import '../theme/theme.dart';
 import 'cart_screen/cart_screen.dart';
-import 'chat_screen/chat_screen.dart';
+import 'chat_screen/chat_main_screen.dart';
 import 'home_screen/home_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -18,7 +18,8 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     HomeScreen(),
-    ChatScreen(),
+    WishListScreen(),
+    ChatMainScreen(),
     CartScreen(),
     ProfileScreen(),
   ];
@@ -51,9 +52,10 @@ class _MainScreenState extends State<MainScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildNavItem(0, Icons.home_outlined, Icons.home, 'Home'),
+                  _buildNavItem(1, Icons.bookmarks_outlined, Icons.bookmarks, 'Wishlist'),
                   _buildChatNavItem(),
                   _buildCardNavItem(),
-                  _buildNavItem(3, Icons.person_outline, Icons.person, 'Profile'),
+                  _buildNavItem(4, Icons.person_outline, Icons.person, 'Profile'),
                 ],
               ),
             ),
@@ -72,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: isSelected
             ? BoxDecoration(
           gradient: LinearGradient(
@@ -105,11 +107,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildCardNavItem() {
-    bool isSelected = _selectedIndex == 2;
+    bool isSelected = _selectedIndex == 3;
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedIndex = 2;
+          _selectedIndex = 3;
         });
       },
       child: Container(
@@ -170,11 +172,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildChatNavItem() {
-    bool isSelected = _selectedIndex == 1;
+    bool isSelected = _selectedIndex == 2;
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedIndex = 1;
+          _selectedIndex = 2;
         });
       },
       child: Container(

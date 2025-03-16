@@ -1,5 +1,6 @@
 import 'package:deal_hub/widgets/social_login_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../theme/theme.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/gradient_button.dart';
@@ -180,7 +181,7 @@ class SignUpScreen extends StatelessWidget {
                           text: "Sign Up",
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              //  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                              Get.to(()=>LoginScreen());
                             }
                           },
                         ),
@@ -202,14 +203,18 @@ class SignUpScreen extends StatelessWidget {
                               child: SocialLoginButton(
                                   text: "Google",
                                   iconPath: 'assets/icons/google.png',
-                                  onPressed: () {}),
+                                  onPressed: () {
+                                    //Get.to(()=>CheckoutScreen());
+                                  }),
                             ),
                             SizedBox(width: 16),
                             Expanded(
                               child: SocialLoginButton(
                                   text: "Apple",
                                   iconPath: 'assets/icons/apple.png',
-                                  onPressed: () {}),
+                                  onPressed: () {
+                                    //Get.to(()=>CheckoutScreen());
+                                  }),
                             ),
                           ],
                         ),
@@ -227,11 +232,7 @@ class SignUpScreen extends StatelessWidget {
                               ),
                               TextButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LoginScreen()));
+                                    Get.to(()=> LoginScreen());
                                   },
                                   child: Text("Login"))
                             ],

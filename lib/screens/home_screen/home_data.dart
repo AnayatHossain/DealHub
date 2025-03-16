@@ -7,6 +7,14 @@ final images = [
   "assets/images/grey cotton pant 2.png",
 ];
 
+final sliderImages = [
+  "assets/images/slider_1.png",
+  "assets/images/slider_2.png",
+  "assets/images/slider_3.png",
+  "assets/images/slider_4.png",
+
+];
+
 final categories = [
   {'icon': Icons.laptop_mac_outlined, 'name': 'Electronics'},
   {'icon': Icons.chair_outlined, 'name': 'Furniture'},

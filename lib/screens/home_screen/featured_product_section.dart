@@ -1,5 +1,7 @@
+import 'package:deal_hub/screens/home_screen/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:deal_hub/screens/home_screen/home_data.dart';
+import 'package:get/get.dart';
 import '../../theme/theme.dart';
 
 class FeaturedProductSection extends StatelessWidget {
@@ -44,7 +46,9 @@ class FeaturedProductSection extends StatelessWidget {
               itemCount: images.length,
               itemBuilder: (context, index) {
                 return InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(()=> ProductDetailsScreen(),);
+                  },
                   child: Container(
                     width: 200,
                     margin: EdgeInsets.all(8),
