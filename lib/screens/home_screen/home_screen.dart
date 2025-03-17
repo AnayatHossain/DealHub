@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
         slivers: [
           SliverAppBar(
             expandedHeight: 100,
-            floating: false,
+            floating: true,
             pinned: true,
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
@@ -34,10 +34,15 @@ class HomeScreen extends StatelessWidget {
               ),
               child: FlexibleSpaceBar(
                 centerTitle: true,
-                titlePadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-
-                title: UseerProfileData(), //User Profile Data
+                titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Reduced vertical padding
+                title: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.center,
+                    child: UseerProfileData(),
+                  ),
+                ),
 
                 background: Stack(
                   children: [
@@ -73,28 +78,14 @@ class HomeScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: Column(
               children: [
-
                 SizedBox(height: 12),
-
-                //Swiper Section
                 SwiperSection(),
-
                 SizedBox(height: 12),
-
-                //Search Products
                 SearchProducts(),
-
-                //Categories
                 ProductsCategories(),
-
                 SizedBox(height: 6),
-
-                // Featured Products
                 FeaturedProductSection(),
-
                 SizedBox(height: 8),
-
-                //New Arrivals
                 NewArrivalsSection(),
               ],
             ),

@@ -3,10 +3,12 @@ import 'package:deal_hub/widgets/custom_text_field.dart';
 import 'package:deal_hub/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../theme/theme.dart';
 import '../../widgets/social_login_button.dart';
 import '../main_screen.dart';
+import 'auth_controller.dart';
 import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,15 +20,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _passwordController = TextEditingController();
-  final _emailController = TextEditingController();
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _emailController.dispose();
-    super.dispose();
-  }
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+  var controller = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -95,52 +91,54 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).size.height * 0.18,
             ),
-            child: SingleChildScrollView( // Changed Column to ListView
+            child: SingleChildScrollView(
+              // Changed Column to ListView
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 20,
-                        offset: Offset(0, 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Login to your account",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 20, bottom: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Login to your account",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Enter your credentials to continue shopping",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppTheme.textSecondary,
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Enter your credentials to continue shopping",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppTheme.textSecondary,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 16),
-                          padding: EdgeInsets.all(5),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.all(5),
+                        child: Form(
+                          key: _formKey,
+                          child: Obx(
+                            () => Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(height: 24),
                                 CustomTextField(
-                                  controller: _emailController,
+                                  controller: emailController,
                                   label: "Username",
                                   keyboardType: TextInputType.emailAddress,
                                   prefixIcon: Icons.person,
@@ -153,11 +151,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                     return null;
                                   },
-
                                 ),
                                 SizedBox(height: 8),
                                 CustomTextField(
-                                  controller: _passwordController,
+                                  controller: passwordController,
                                   label: "Password",
                                   prefixIcon: Icons.lock,
                                   keyboardType: TextInputType.visiblePassword,
@@ -171,7 +168,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                     return null;
                                   },
-
                                 ),
                                 Align(
                                   alignment: Alignment.centerRight,
@@ -188,12 +184,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 SizedBox(height: 20),
-                                GradientButton(
+                                controller.isLoading.value ? const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation(AppTheme.primaryColor),
+                                ): GradientButton(
                                   text: "Login",
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      Get.offAll(() => MainScreen());
-                                    }
+                                  onPressed: () async {
+                                    controller.isLoading(true);
+                                    await controller.loginMethod(context).then((value) {
+                                      if (value != null) {
+                                        VxToast.show(context, msg: "Logged in Successfully");
+                                        Get.offAll(() =>  MainScreen());
+                                      }
+                                      else {
+                                        controller.isLoading(false);
+                                      }
+                                    });
                                   },
                                 ),
                                 SizedBox(height: 24),
@@ -256,14 +261,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
             ),
           ),
         ],
       ),
     );
   }
+  // @override
+  // void dispose() {
+  //   passwordController.dispose();
+  //   emailController.dispose();
+  //   super.dispose();
+  // }
 }

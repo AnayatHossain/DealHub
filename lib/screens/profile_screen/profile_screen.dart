@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../theme/theme.dart';
+import '../authentication/auth_controller.dart';
 import '../cart_screen/my_order_screen.dart';
 import '../notifications_scrren/notifications_screen.dart';
 import '../onboarding_screen.dart';
@@ -260,7 +261,8 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 4),
                               Tooltip(
-                                message: 'Verified account', // Message to display
+                                message: 'Verified account',
+                                // Message to display
                                 child: GestureDetector(
                                   onTap: () {
                                     // Optional: Add additional functionality on tap
@@ -286,7 +288,6 @@ class ProfileScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     SizedBox(height: 24),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24),
@@ -373,7 +374,7 @@ class ProfileScreen extends StatelessWidget {
                                 title: 'Notifications',
                                 subtitle: "Manage your notifications",
                                 onTap: () {
-                                  Get.to(()=>NotificationsScreen());
+                                  Get.to(() => NotificationsScreen());
                                 },
                                 color: AppTheme.primaryColor,
                               ),
@@ -388,7 +389,7 @@ class ProfileScreen extends StatelessWidget {
                                 title: 'Settings',
                                 subtitle: "App settings and preferences",
                                 onTap: () {
-                                  Get.to(()=>ChooseLanguageScreen());
+                                  Get.to(() => ChooseLanguageScreen());
                                 },
                                 color: AppTheme.tertiaryColor,
                               ),
@@ -410,7 +411,9 @@ class ProfileScreen extends StatelessWidget {
                                   icon: Icons.logout,
                                   title: 'Logout',
                                   subtitle: "Sign out of your account",
-                                  onTap: () {
+                                  onTap: () async {
+                                    await Get.put(AuthController())
+                                        .signoutMethod(context);
                                     Get.offAll(() => OnboardingScreen());
                                   },
                                   color: AppTheme.error,

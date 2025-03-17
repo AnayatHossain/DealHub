@@ -1,14 +1,16 @@
-import 'package:deal_hub/screens/authentication/signup_screen.dart';
 import 'package:deal_hub/widgets/custom_text_field.dart';
 import 'package:deal_hub/widgets/gradient_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../theme/theme.dart';
 import '../../widgets/social_login_button.dart';
 import '../main_screen.dart';
+import 'auth_controller.dart';
+import 'firebase_const.dart';
 import 'login_screen.dart';
-
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,24 +21,17 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _fullNameController = TextEditingController();
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _emailController.dispose();
-    _fullNameController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
+  bool isCheck = false;
+  var controller = Get.put(AuthController());
+  var nameController = TextEditingController();
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+  var passwordConfirmController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Fix for keyboard pushing UI
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppTheme.backgroundColor,
       body: Stack(
         children: [
@@ -100,7 +95,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).size.height * 0.12,
             ),
-            child: SingleChildScrollView( // Changed Column to ListView
+            child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Container(
                 decoration: BoxDecoration(
@@ -140,12 +135,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding: EdgeInsets.all(5),
                         child: Form(
                           key: _formKey,
-                          child: Column(
+                          child: Obx(() => Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SizedBox(height: 24),
                               CustomTextField(
-                                controller: _fullNameController,
+                                controller: nameController,
                                 label: "Full Name",
                                 prefixIcon: Icons.person,
                                 keyboardType: TextInputType.text,
@@ -155,14 +150,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   }
                                   return null;
                                 },
-
                               ),
                               SizedBox(height: 8),
                               CustomTextField(
-                                controller: _emailController,
+                                controller: emailController,
                                 label: "Email",
                                 keyboardType: TextInputType.emailAddress,
-                                prefixIcon: Icons.person,
+                                prefixIcon: Icons.email,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter your email';
@@ -172,11 +166,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   }
                                   return null;
                                 },
-
                               ),
                               SizedBox(height: 8),
                               CustomTextField(
-                                controller: _passwordController,
+                                controller: passwordController,
                                 label: "Password",
                                 prefixIcon: Icons.lock,
                                 keyboardType: TextInputType.visiblePassword,
@@ -190,11 +183,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   }
                                   return null;
                                 },
-
                               ),
                               SizedBox(height: 8),
                               CustomTextField(
-                                controller: _confirmPasswordController,
+                                controller: passwordConfirmController,
                                 label: "Confirm Password",
                                 prefixIcon: Icons.lock,
                                 keyboardType: TextInputType.visiblePassword,
@@ -203,20 +195,65 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   if (value == null || value.isEmpty) {
                                     return 'Please confirm your password';
                                   }
-                                  if (value.length < 6) {
-                                    return 'Password must be at least 6 characters';
+                                  if (value != passwordController.text) {
+                                    return 'Passwords do not match';
                                   }
                                   return null;
                                 },
-
                               ),
-
                               SizedBox(height: 20),
-                              GradientButton(
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: isCheck,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isCheck = value!;
+                                      });
+                                    },
+                                  ),
+                                  Text("I agree to the terms and conditions"),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              controller.isLoading.value
+                                  ? CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(AppTheme.primaryColor),
+                              )
+                                  : GradientButton(
                                 text: "Sign Up",
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    Get.offAll(() => MainScreen());
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate() && isCheck) {
+                                    controller.isLoading(true);
+                                    if (passwordController.text == passwordConfirmController.text) {
+                                      try {
+                                        UserCredential? userCredential = await controller.signupMethod(
+                                          emailController.text,
+                                          passwordController.text,
+                                          context,
+                                          name: nameController.text,
+                                        );
+
+                                        if (userCredential != null) {
+                                          await controller.storeUserData(
+                                            nameController.text,
+                                            emailController.text,
+                                            passwordController.text,
+                                          );
+
+                                          VxToast.show(context, msg: "Logged in Successfully");
+                                          Get.offAll(() => MainScreen());
+                                        }
+                                      } catch (e) {
+                                        VxToast.show(context, msg: e.toString());
+                                        await auth.signOut();
+                                        controller.isLoading(false);
+                                      }
+                                    } else {
+                                      VxToast.show(context, msg: "Passwords do not match!");
+                                    }
+                                  } else if (!isCheck) {
+                                    VxToast.show(context, msg: "Please agree to the terms and conditions");
                                   }
                                 },
                               ),
@@ -277,7 +314,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                             ],
-                          ),
+                          )),
                         ),
                       ),
                     ],
@@ -290,4 +327,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+  // @override
+  // void dispose() {
+  //   nameController.dispose();
+  //   emailController.dispose();
+  //   passwordController.dispose();
+  //   passwordConfirmController.dispose();
+  //   super.dispose();
+  // }
 }
