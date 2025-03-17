@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:deal_hub/data/data.dart';
-import '../../theme/theme.dart';
+import 'package:get/get.dart';
+import '../../../theme/theme.dart';
+import 'view_all_categories_screen.dart';
 
 class ProductsCategories extends StatelessWidget {
   const ProductsCategories({super.key});
@@ -24,7 +26,9 @@ class ProductsCategories extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(()=> CategoriesScreen());
+                },
                 child: Text(
                   "View All",
                   style: TextStyle(

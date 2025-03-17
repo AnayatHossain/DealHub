@@ -15,7 +15,6 @@ final sliderImages = [
   "assets/images/slider_2.png",
   "assets/images/slider_3.png",
   "assets/images/slider_4.png",
-
 ];
 
 final categories = [
@@ -25,8 +24,12 @@ final categories = [
   {'icon': Icons.sports_basketball_outlined, 'name': 'Sports'},
   {'icon': Icons.phone_android_outlined, 'name': 'Phone'},
   {'icon': Icons.watch_outlined, 'name': 'Accessorise'},
+  {'icon': Icons.shopping_bag_outlined, 'name': 'Bags'},
+  {'icon': Icons.chair_outlined, 'name': 'Furniture'},
+  {'icon': Icons.checkroom_outlined, 'name': 'Clothing'},
+  {'icon': Icons.diamond_outlined, 'name': 'Jewelry'},
+  {'icon': Icons.shopify_outlined, 'name': 'Shoes'},
 ];
-
 
 final List<Map<String, dynamic>> notifications = [
   {
@@ -119,7 +122,6 @@ final List<Map<String, dynamic>> notifications = [
     'icon': Icons.system_update_outlined,
     'iconColor': AppTheme.secondaryColor,
   },
-
 ];
 
 final List<Map<String, String>> languages = [
@@ -152,13 +154,12 @@ final List<Map<String, dynamic>> messages = [
   },
   {
     'message':
-    "Of course! I\'d be happy to help. Could you please provide Order ID.",
+        "Of course! I\'d be happy to help. Could you please provide Order ID.",
     'isMe': true,
     'time': "2:30 PM",
     'status': "read",
   },
 ];
-
 
 final List<Map<String, dynamic>> chatList = [
   {
@@ -251,7 +252,7 @@ final List<OnboardingData> pages = [
   OnboardingData(
     title: "Secure Payments",
     description:
-    "Shop with confidence using our secure and reliable payment system. "
+        "Shop with confidence using our secure and reliable payment system. "
         "Your transactions are encrypted and protected at all times!",
     image: "assets/images/onboarding3.png",
   ),
@@ -290,3 +291,22 @@ final colors = [
   Colors.grey,
   Colors.black
 ];
+
+final filters = [
+  'All',
+  '5⭐',
+  '4⭐',
+  '3⭐',
+  '2⭐',
+  '1⭐',
+  'With Photos',
+];
+
+final Map<int, double> percentage = {
+  5: 0.65,
+  4: 0.20,
+  3: 0.10,
+  2: 0.03,
+  1: 0.02,
+};
+

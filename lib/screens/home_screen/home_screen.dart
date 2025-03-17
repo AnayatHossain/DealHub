@@ -1,14 +1,14 @@
-import 'package:deal_hub/screens/home_screen/featured_product_section.dart';
-import 'package:deal_hub/screens/home_screen/products_categories.dart';
+import 'package:deal_hub/screens/home_screen/model/featured_product_section.dart';
+import 'package:deal_hub/screens/home_screen/products_categories/products_categories.dart';
 import 'package:deal_hub/screens/home_screen/search_producrs.dart';
-import 'package:deal_hub/screens/home_screen/swiper_section.dart';
-import 'package:deal_hub/screens/home_screen/useer_profile_data.dart';
+import 'package:deal_hub/screens/home_screen/model/swiper_section.dart';
+import 'package:deal_hub/screens/home_screen/model/useer_profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../theme/theme.dart';
 import '../notifications_scrren/notifications_screen.dart';
-import 'new_arivals_section.dart';
+import 'model/new_arivals_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

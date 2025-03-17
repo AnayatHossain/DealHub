@@ -1,8 +1,10 @@
+import 'package:deal_hub/screens/profile_screen/user_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../theme/theme.dart';
 import '../cart_screen/my_order_screen.dart';
+import '../notifications_scrren/notifications_screen.dart';
 import '../onboarding_screen.dart';
 import '../setting/choose_language_screen.dart';
 
@@ -257,10 +259,18 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 4),
-                              Icon(
-                                Icons.verified,
-                                color: AppTheme.success,
-                                size: 22,
+                              Tooltip(
+                                message: 'Verified account', // Message to display
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Optional: Add additional functionality on tap
+                                  },
+                                  child: Icon(
+                                    Icons.verified,
+                                    color: AppTheme.success,
+                                    size: 22,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -346,7 +356,9 @@ class ProfileScreen extends StatelessWidget {
                                 icon: Icons.person_outline,
                                 title: 'Personal Details',
                                 subtitle: "Update your personal information",
-                                onTap: () {},
+                                onTap: () {
+                                  Get.to(() => UserDetailsScreen());
+                                },
                                 color: AppTheme.primaryColor,
                               ),
                               _buildMenuItem(
@@ -360,7 +372,9 @@ class ProfileScreen extends StatelessWidget {
                                 icon: Icons.notifications,
                                 title: 'Notifications',
                                 subtitle: "Manage your notifications",
-                                onTap: () {},
+                                onTap: () {
+                                  Get.to(()=>NotificationsScreen());
+                                },
                                 color: AppTheme.primaryColor,
                               ),
                             ],

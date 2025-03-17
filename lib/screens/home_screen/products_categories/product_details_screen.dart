@@ -1,9 +1,10 @@
+import 'package:deal_hub/screens/home_screen/ratings_reviews_screens/ratings_reviews_screen.dart';
 import 'package:deal_hub/theme/theme.dart';
 import 'package:deal_hub/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../data/data.dart';
+import '../../../data/data.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key});
@@ -423,7 +424,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ),
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.to(()=>RatingsReviewsScreen());
+                                },
                                 child: Text(
                                   'View All',
                                 ),
