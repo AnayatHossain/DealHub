@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../theme/theme.dart';
 import '../../../data/data.dart';
+import '../new_arrivals_view_all_screen.dart';
 
 class NewArrivalsSection extends StatelessWidget {
   const NewArrivalsSection({super.key});
@@ -24,7 +26,9 @@ class NewArrivalsSection extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(() => NewArrivalsViewAllScreen());
+                },
                 child: Text(
                   "View All",
                   style: TextStyle(

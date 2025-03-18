@@ -8,7 +8,7 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../theme/theme.dart';
 import '../../widgets/social_login_button.dart';
 import '../main_screen.dart';
-import 'auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {

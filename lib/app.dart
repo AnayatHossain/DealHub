@@ -1,4 +1,6 @@
+import 'package:deal_hub/controllers/auth_controller.dart';
 import 'package:deal_hub/screens/main_screen.dart';
+import 'package:deal_hub/controllers/profile_controller.dart';
 import 'package:deal_hub/screens/setting/choose_language_screen.dart';
 import 'package:deal_hub/screens/splash_screen.dart';
 import 'package:deal_hub/theme/theme.dart';
@@ -15,6 +17,10 @@ class DealHub extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: SplashScreen(),
+      initialBinding: BindingsBuilder(() {
+        Get.lazyPut(() => ProfileController());
+        Get.put(AuthController());
+      }),
 
     );
   }

@@ -1,28 +1,99 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:deal_hub/screens/profile_screen/profile_widgets/profile_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:deal_hub/controllers/profile_controller.dart';
 import 'package:deal_hub/widgets/custom_text_field.dart';
 import 'package:deal_hub/theme/theme.dart';
+import 'package:intl/intl.dart';
 
-class EditUserDetailsScreen extends StatefulWidget {
-  const EditUserDetailsScreen({super.key});
+class EditPersonalDetailsScreen extends StatefulWidget {
+  const EditPersonalDetailsScreen({super.key});
 
   @override
-  State<EditUserDetailsScreen> createState() => _EditUserDetailsScreenState();
+  State<EditPersonalDetailsScreen> createState() => _EditPersonalDetailsScreenState();
 }
 
-class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
+class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
+
   var controller = Get.find<ProfileController>();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _dobController = TextEditingController();
+  String _selectedGender = 'None';
 
-  final _firstNameController = TextEditingController(text: "Anayat");
-  final _lastNameController = TextEditingController(text: "Hossain");
-  final _emailController = TextEditingController(text: "anayathossain@admin.com");
-  final _phoneController = TextEditingController(text: "+88017123456789");
-  final _dobController = TextEditingController(text: "03 January, 1998");
-  String _selectedGender = 'Male';
+  var currentUser = FirebaseAuth.instance.currentUser;
+  bool _isSaving = false;// To track if the save operation is in progress
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  void _fetchUserData() async {
+    var userDoc = await FirebaseFirestore.instance.collection('users').doc(currentUser!.uid).get();
+    if (userDoc.exists) {
+      var data = userDoc.data() as Map<String, dynamic>;
+
+      // Split the full name into first name and last name
+      String fullName = data['name'] ?? '';
+      List<String> nameParts = fullName.split(' ');
+
+      String firstName = nameParts.isNotEmpty ? nameParts.first : '';
+      String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
+      setState(() {
+        _firstNameController.text = firstName; // Set first name
+        _lastNameController.text = lastName;  // Set last name
+        _emailController.text = data['email'] ?? '';
+        _phoneController.text = data['phone'] ?? '';
+        _dobController.text = data['dob'] != null ? DateFormat('dd MMM yyyy').format((data['dob'] as Timestamp).toDate()) : '';
+        _selectedGender = data['gender'] ?? 'None';
+      });
+    }
+  }
+
+  Future<void> _updateUserData() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isSaving = true; // Start the saving process
+      });
+
+      try {
+        // Combine first name and last name into full name
+        String fullName = '${_firstNameController.text} ${_lastNameController.text}';
+
+        // Update the user data in Firestore
+        await FirebaseFirestore.instance.collection('users').doc(currentUser!.uid).update({
+          'name': fullName, // Save full name
+          'email': _emailController.text,
+          'phone': _phoneController.text,
+          'dob': _dobController.text.isNotEmpty ? Timestamp.fromDate(DateFormat('dd MMM yyyy').parse(_dobController.text)) : null,
+          'gender': _selectedGender,
+        });
+
+        // If the update is successful, navigate back
+        Get.back();
+      } catch (e) {
+        // Handle any errors that occur during the update
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } finally {
+        setState(() {
+          _isSaving = false; // Stop the saving process
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -82,7 +153,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          'Edit User Details',
+                          'Edit Personal Details',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -91,10 +162,10 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Get.back();
-                        },
+                      _isSaving
+                          ? CircularProgressIndicator(color: Colors.white) // Show loading indicator
+                          : TextButton(
+                        onPressed: _updateUserData,
                         child: Text(
                           "Save",
                           style: TextStyle(
@@ -155,12 +226,21 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(80),
-                                  child: Obx(() => controller.profileImgPath.value.isNotEmpty ? Image.file(
-                                    File(controller.profileImgPath.value),  // Use File instead of asset
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                  ):Image.asset('assets/images/profile.JPG')),
+                                  child: Obx(
+                                        () => controller.profileImgPath.value.isNotEmpty
+                                        ?  Image.file(
+                                          File(controller.profileImgPath.value),
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Image.asset(
+                                      'assets/images/profile.JPG',
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
                               ),
                               Positioned(
@@ -177,9 +257,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                     ),
                                   ),
                                   child: InkWell(
-                                      onTap: () {
-                                        controller.changeImage(context);
-                                      },
+                                      onTap: () => controller.changeImage(context),
                                       child: Icon(
                                         Icons.camera_alt,
                                         color: AppTheme.primaryColor,
@@ -230,6 +308,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                   CustomTextField(
                                     controller: _emailController,
                                     label: "Email",
+                                    keyboardType: TextInputType.emailAddress,
                                     prefixIcon: Icons.email,
                                   ),
                                   SizedBox(width: 16),

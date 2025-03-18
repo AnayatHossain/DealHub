@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:deal_hub/controllers/profile_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter/material.dart';
 
-import 'firebase_const.dart';
+import '../screens/authentication/firebase_const.dart';
 
 class AuthController extends GetxController {
-  var isLoading= false.obs;
-
+  var isLoading = false.obs;
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+
   // Login
   Future<UserCredential?> loginMethod(String email, String password, BuildContext context) async {
     UserCredential? userCredential;
@@ -20,6 +20,10 @@ class AuthController extends GetxController {
         email: email,
         password: password,
       );
+
+      // Fetch profile data after login
+      Get.find<ProfileController>().fetchUserProfile();
+
       return userCredential;
     } on FirebaseAuthException catch (e) {
       VxToast.show(context, msg: e.message.toString());
@@ -59,8 +63,15 @@ class AuthController extends GetxController {
         'name': name,
         'email': email,
         'password': password, // Consider hashing the password before storing
-        'imageUrl': '',
+        'profileImage': '', // Use 'profileImage' instead of 'imageUrl'
         'id': auth.currentUser!.uid,
+        'order_count': '00',
+        'shipping_count': '00',
+        'wishlist_count': '00',
+        'phone': '' ,
+        'dob': '',
+        'gender': '',
+        'memberSince': auth.currentUser!.metadata.creationTime,
       });
     } catch (e) {
       print("Error storing user data: $e");
@@ -75,11 +86,4 @@ class AuthController extends GetxController {
       VxToast.show(context, msg: e.toString());
     }
   }
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   emailController.dispose();
-  //   passwordController.dispose();
-  //   super.dispose();
-  // }
 }

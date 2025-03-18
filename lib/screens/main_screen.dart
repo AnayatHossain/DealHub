@@ -18,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     HomeScreen(),
-    WishListScreen(),
     ChatMainScreen(),
     CartScreen(),
     ProfileScreen(),
@@ -41,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
@@ -52,10 +51,9 @@ class _MainScreenState extends State<MainScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildNavItem(0, Icons.home_outlined, Icons.home, 'Home'),
-                  _buildNavItem(1, Icons.bookmarks_outlined, Icons.bookmarks, 'Wishlist'),
                   _buildChatNavItem(),
                   _buildCardNavItem(),
-                  _buildNavItem(4, Icons.person_outline, Icons.person, 'Profile'),
+                  _buildNavItem(3, Icons.person_outline, Icons.person, 'Profile'),
                 ],
               ),
             ),
@@ -107,11 +105,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildCardNavItem() {
-    bool isSelected = _selectedIndex == 3;
+    bool isSelected = _selectedIndex == 2;
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedIndex = 3;
+          _selectedIndex = 2;
         });
       },
       child: Container(
@@ -172,11 +170,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildChatNavItem() {
-    bool isSelected = _selectedIndex == 2;
+    bool isSelected = _selectedIndex == 1;
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedIndex = 2;
+          _selectedIndex = 1;
         });
       },
       child: Container(

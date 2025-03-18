@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:deal_hub/data/data.dart';
 import 'package:get/get.dart';
 import '../../../theme/theme.dart';
+import '../featuared_products_view_all_screen.dart';
 
 class FeaturedProductSection extends StatelessWidget {
   const FeaturedProductSection({super.key});
@@ -26,7 +27,9 @@ class FeaturedProductSection extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(()=> FeaturedProductsViewAllScreen());
+                },
                 child: Text(
                   "View All",
                   style: TextStyle(

@@ -8,7 +8,7 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../theme/theme.dart';
 import '../../widgets/social_login_button.dart';
 import '../main_screen.dart';
-import 'auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 import 'firebase_const.dart';
 import 'login_screen.dart';
 
@@ -22,7 +22,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   bool isCheck = false;
-  var controller = Get.put(AuthController());
+  final AuthController controller = Get.put(AuthController());
   var nameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
@@ -216,47 +216,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ],
                               ),
                               SizedBox(height: 20),
-                              controller.isLoading.value
-                                  ? CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(AppTheme.primaryColor),
-                              )
-                                  : GradientButton(
+                              GradientButton(
                                 text: "Sign Up",
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate() && isCheck) {
-                                    controller.isLoading(true);
+                                    controller.isLoading(true); // Set loading state to true
+
                                     if (passwordController.text == passwordConfirmController.text) {
                                       try {
                                         UserCredential? userCredential = await controller.signupMethod(
-                                          emailController.text,
-                                          passwordController.text,
+                                          emailController.text.trim(),
+                                          passwordController.text.trim(),
                                           context,
-                                          name: nameController.text,
+                                          name: nameController.text.trim(),
                                         );
 
                                         if (userCredential != null) {
                                           await controller.storeUserData(
-                                            nameController.text,
-                                            emailController.text,
-                                            passwordController.text,
+                                            nameController.text.trim(),
+                                            emailController.text.trim(),
+                                            passwordController.text.trim(),
                                           );
 
-                                          VxToast.show(context, msg: "Logged in Successfully");
+                                          VxToast.show(context, msg: "Signed up Successfully");
                                           Get.offAll(() => MainScreen());
                                         }
                                       } catch (e) {
                                         VxToast.show(context, msg: e.toString());
                                         await auth.signOut();
-                                        controller.isLoading(false);
                                       }
                                     } else {
                                       VxToast.show(context, msg: "Passwords do not match!");
                                     }
+
+                                    controller.isLoading(false); // Reset loading state
                                   } else if (!isCheck) {
                                     VxToast.show(context, msg: "Please agree to the terms and conditions");
                                   }
                                 },
+                                isLoading: controller.isLoading.value, // Pass the loading state
                               ),
+
                               SizedBox(height: 24),
                               Center(
                                 child: Text(

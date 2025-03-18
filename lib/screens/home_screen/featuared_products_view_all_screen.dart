@@ -1,10 +1,9 @@
 import 'package:deal_hub/data/data.dart';
 import 'package:flutter/material.dart';
-
 import '../../theme/theme.dart';
 
-class WishListScreen extends StatelessWidget {
-  const WishListScreen({super.key});
+class FeaturedProductsViewAllScreen extends StatelessWidget {
+  const FeaturedProductsViewAllScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,42 +25,17 @@ class WishListScreen extends StatelessWidget {
                 ),
               ),
               child: FlexibleSpaceBar(
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'My Wishlist',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundColor: Colors.white,
-                      child: Text(
-                        "13",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
+                title: Text(
+                  'Featured Products',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 centerTitle: true,
               ),
             ),
-            actions: [
-              IconButton(
-                iconSize: 30,
-                onPressed: () {},
-                icon: Icon(Icons.delete_sweep_outlined, color: Colors.white),
-              ),
-            ],
           ),
           SliverPadding(
             padding: EdgeInsets.all(16),
@@ -72,7 +46,7 @@ class WishListScreen extends StatelessWidget {
                   crossAxisSpacing: 16,
                   childAspectRatio: 0.6),
               delegate: SliverChildBuilderDelegate(
-                  (context, index) => _buildWishListItem(context, index),
+                      (context, index) => _buildWishListItem(context, index),
                   childCount: 4),
             ),
           ),
@@ -210,11 +184,11 @@ Widget _buildWishListItem(BuildContext context, int index) {
                         color: AppTheme.primaryColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                        child: Icon(
-                          Icons.shopping_cart_outlined,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      child: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                        size: 20,
+                      ),
 
                     ),
 

@@ -48,6 +48,7 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
+
             color: AppTheme.textSecondary,
             fontSize: 14,
           ),

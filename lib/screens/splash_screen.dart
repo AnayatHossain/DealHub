@@ -73,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
             _loadingProgress = 1.0;
             _progressTimer?.cancel();
 
-            Future.delayed(const Duration(milliseconds: 200), () {
+            Future.delayed(Duration(milliseconds: 200), () {
               auth.authStateChanges().listen((User? user) {
                 if (user == null && mounted) {
                   Get.to(() => OnboardingScreen());

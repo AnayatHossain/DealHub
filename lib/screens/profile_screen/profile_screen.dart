@@ -1,21 +1,33 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:deal_hub/screens/profile_screen/profile_widgets/build_action_card.dart';
 import 'package:deal_hub/screens/profile_screen/profile_widgets/build_menu_Item.dart';
 import 'package:deal_hub/screens/profile_screen/profile_widgets/build_section.dart';
-import 'package:deal_hub/screens/profile_screen/user_details_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
+import 'package:deal_hub/controllers/profile_controller.dart';
+import 'package:deal_hub/screens/profile_screen/personal_details_screen.dart';
+import 'package:deal_hub/services/firestore_services.dart';
 import '../../theme/theme.dart';
-import '../authentication/auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 import '../cart_screen/my_order_screen.dart';
+import '../help_suppor_about/about_screen.dart';
+import '../help_suppor_about/help_and_support_screen.dart';
 import '../notifications_scrren/notifications_screen.dart';
 import '../onboarding_screen.dart';
 import '../setting/choose_language_screen.dart';
+import '../wish_list_screen/wish_list_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    var currentUser = FirebaseAuth.instance.currentUser;
+    var controller = Get.find<ProfileController>();
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: SingleChildScrollView(
@@ -94,89 +106,136 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: Image.asset('assets/images/profile.JPG'),
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          Row(
+                      child: StreamBuilder(
+                        stream: FirestorServices.getUser(currentUser!.uid),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text("Error: ${snapshot.error}"),
+                            );
+                          }
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppTheme.primaryColor),
+                              ),
+                            );
+                          }
+                          var data = snapshot.data!.docs[0];
+                          return Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Anayat Hossain',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.textPrimary,
+                              SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(80),
+                                  child: Obx(() {
+                                    if (controller
+                                        .profileImgPath.value.isNotEmpty) {
+                                      return Image.file(
+                                        File(controller.profileImgPath.value),
+                                        fit: BoxFit.cover,
+                                      );
+                                    } else {
+                                      return Image.asset(
+                                          'assets/images/profile.JPG');
+                                    }
+                                  }),
                                 ),
                               ),
-                              SizedBox(width: 4),
-                              Tooltip(
-                                message: 'Verified account',
-                                // Message to display
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // Optional: Add additional functionality on tap
-                                  },
-                                  child: Icon(
-                                    Icons.verified,
-                                    color: AppTheme.success,
-                                    size: 22,
+                              SizedBox(height: 16),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${data['name']}",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.textPrimary,
+                                    ),
                                   ),
+                                  SizedBox(width: 4),
+                                  Tooltip(
+                                    message: 'Verified account',
+                                    child: GestureDetector(
+                                      onTap: () {},
+                                      child: Icon(
+                                        Icons.verified,
+                                        color: AppTheme.success,
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "${data['email']}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppTheme.textSecondary,
                                 ),
                               ),
                             ],
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'anayathossain@admin.com',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppTheme.textSecondary,
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
                     SizedBox(height: 24),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: Row(
-                        children: [
-                          buildActionCard(
-                            icon: Icons.shopping_bag_outlined,
-                            title: 'Orders',
-                            value: '12',
-                            color: AppTheme.primaryColor,
-                          ),
-                          SizedBox(width: 12),
-                          buildActionCard(
-                            icon: Icons.favorite_border_outlined,
-                            title: 'Wishlist',
-                            value: '8',
-                            color: AppTheme.secondaryColor,
-                          ),
-                          SizedBox(width: 12),
-                          buildActionCard(
-                            icon: Icons.local_shipping_outlined,
-                            title: 'Shipping',
-                            value: '2',
-                            color: AppTheme.tertiaryColor,
-                          ),
-                        ],
-                      ),
-                    ),
+                    StreamBuilder(
+                        stream: FirestorServices.getUser(currentUser!.uid),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text("Error: ${snapshot.error}"),
+                            );
+                          }
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppTheme.primaryColor),
+                              ),
+                            );
+                          }
+                          var data = snapshot.data!.docs[0];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            child: Row(
+                              children: [
+                                buildActionCard(
+                                  icon: Icons.shopping_bag_outlined,
+                                  title: 'Orders',
+                                  value: "${data['order_count'] ?? '00'}",
+                                  color: AppTheme.primaryColor,
+                                ),
+                                SizedBox(width: 12),
+                                buildActionCard(
+                                  icon: Icons.favorite_border_outlined,
+                                  title: 'Wishlist',
+                                  value: "${data['wishlist_count'] ?? '00'}",
+                                  color: AppTheme.secondaryColor,
+                                ),
+                                SizedBox(width: 12),
+                                buildActionCard(
+                                  icon: Icons.local_shipping_outlined,
+                                  title: 'Shipping',
+                                  value: "${data['shipping_count'] ?? '00'}",
+                                  color: AppTheme.tertiaryColor,
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
                     SizedBox(height: 24),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24),
@@ -191,6 +250,15 @@ class ProfileScreen extends StatelessWidget {
                                 subtitle: "View your order history",
                                 onTap: () {
                                   Get.to(() => MyOrderScreen());
+                                },
+                                color: AppTheme.secondaryColor,
+                              ),
+                              buildMenuItem(
+                                icon: Icons.bookmarks_outlined,
+                                title: 'Wishlist',
+                                subtitle: "View your wishlists",
+                                onTap: () {
+                                  Get.to(() => WishListScreen());
                                 },
                                 color: AppTheme.secondaryColor,
                               ),
@@ -219,7 +287,7 @@ class ProfileScreen extends StatelessWidget {
                                 title: 'Personal Details',
                                 subtitle: "Update your personal information",
                                 onTap: () {
-                                  Get.to(() => UserDetailsScreen());
+                                  Get.to(() => PersonalDetailsScreen());
                                 },
                                 color: AppTheme.primaryColor,
                               ),
@@ -258,27 +326,32 @@ class ProfileScreen extends StatelessWidget {
                                 icon: Icons.help_outline,
                                 title: 'Help & Support',
                                 subtitle: "Get help and support",
-                                onTap: () {},
+                                onTap: () {
+                                  Get.to(()=> HelpAndSupportScreen());
+                                },
                                 color: AppTheme.tertiaryColor,
                               ),
                               buildMenuItem(
                                 icon: Icons.error_outline,
                                 title: 'About',
                                 subtitle: "Get to Know Us!",
-                                onTap: () {},
+                                onTap: () {
+                                  Get.to(() => AboutScreen());
+                                },
                                 color: AppTheme.tertiaryColor,
                               ),
                               buildMenuItem(
-                                  icon: Icons.logout,
-                                  title: 'Logout',
-                                  subtitle: "Sign out of your account",
-                                  onTap: () async {
-                                    await Get.put(AuthController())
-                                        .signoutMethod(context);
-                                    Get.offAll(() => OnboardingScreen());
-                                  },
-                                  color: AppTheme.error,
-                                  isDestructive: true),
+                                icon: Icons.logout,
+                                title: 'Logout',
+                                subtitle: "Sign out of your account",
+                                onTap: () async {
+                                  await Get.find<AuthController>()
+                                      .signoutMethod(context);
+                                  Get.offAll(() => OnboardingScreen());
+                                },
+                                color: AppTheme.error,
+                                isDestructive: true,
+                              ),
                             ],
                           ),
                         ],
