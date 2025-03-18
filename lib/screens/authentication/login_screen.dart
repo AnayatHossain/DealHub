@@ -184,22 +184,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 SizedBox(height: 20),
-                                controller.isLoading.value ? const CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation(AppTheme.primaryColor),
-                                ): GradientButton(
+                                GradientButton(
                                   text: "Login",
                                   onPressed: () async {
-                                    controller.isLoading(true);
-                                    await controller.loginMethod(context).then((value) {
-                                      if (value != null) {
-                                        VxToast.show(context, msg: "Logged in Successfully");
-                                        Get.offAll(() =>  MainScreen());
-                                      }
-                                      else {
-                                        controller.isLoading(false);
-                                      }
-                                    });
+                                    if (_formKey.currentState!.validate()) {
+                                      controller.isLoading(true);
+                                      await controller.loginMethod(
+                                        emailController.text.trim(),
+                                        passwordController.text.trim(),
+                                        context,
+                                      ).then((value) {
+                                        if (value != null) {
+                                          VxToast.show(context, msg: "Logged in Successfully");
+                                          Get.offAll(() => MainScreen());
+                                        } else {
+                                          controller.isLoading(false);
+                                        }
+                                      });
+                                    }
                                   },
+                                  isLoading: controller.isLoading.value, // Pass the loading state
                                 ),
                                 SizedBox(height: 24),
                                 Center(

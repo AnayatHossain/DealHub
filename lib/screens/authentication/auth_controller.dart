@@ -13,20 +13,19 @@ class AuthController extends GetxController {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   // Login
-  Future<UserCredential?> loginMethod(context) async {
+  Future<UserCredential?> loginMethod(String email, String password, BuildContext context) async {
     UserCredential? userCredential;
     try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
+      userCredential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
       return userCredential;
     } on FirebaseAuthException catch (e) {
       VxToast.show(context, msg: e.message.toString());
-      return userCredential;
+      return null;
     }
   }
-
   // Signup
   Future<UserCredential?> signupMethod(
       String email,

@@ -1,9 +1,9 @@
-import 'package:deal_hub/widgets/custom_text_field.dart';
-import 'package:deal_hub/widgets/gradient_button.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../theme/theme.dart';
+import 'package:deal_hub/screens/profile_screen/profile_widgets/profile_controller.dart';
+import 'package:deal_hub/widgets/custom_text_field.dart';
+import 'package:deal_hub/theme/theme.dart';
 
 class EditUserDetailsScreen extends StatefulWidget {
   const EditUserDetailsScreen({super.key});
@@ -14,13 +14,15 @@ class EditUserDetailsScreen extends StatefulWidget {
 
 class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
+  var controller = Get.find<ProfileController>();
+
   final _firstNameController = TextEditingController(text: "Anayat");
   final _lastNameController = TextEditingController(text: "Hossain");
-  final _emailController =
-      TextEditingController(text: "anayathossain@admin.com");
+  final _emailController = TextEditingController(text: "anayathossain@admin.com");
   final _phoneController = TextEditingController(text: "+88017123456789");
   final _dobController = TextEditingController(text: "03 January, 1998");
   String _selectedGender = 'Male';
+
 
   @override
   void dispose() {
@@ -153,8 +155,12 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(80),
-                                  child:
-                                      Image.asset('assets/images/profile.JPG'),
+                                  child: Obx(() => controller.profileImgPath.value.isNotEmpty ? Image.file(
+                                    File(controller.profileImgPath.value),  // Use File instead of asset
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ):Image.asset('assets/images/profile.JPG')),
                                 ),
                               ),
                               Positioned(
@@ -170,11 +176,15 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                       width: 2,
                                     ),
                                   ),
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    color: AppTheme.primaryColor,
-                                    size: 20,
-                                  ),
+                                  child: InkWell(
+                                      onTap: () {
+                                        controller.changeImage(context);
+                                      },
+                                      child: Icon(
+                                        Icons.camera_alt,
+                                        color: AppTheme.primaryColor,
+                                        size: 20,
+                                      )),
                                 ),
                               ),
                             ],
@@ -204,13 +214,6 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                           controller: _firstNameController,
                                           label: "First Name",
                                           prefixIcon: Icons.person,
-                                          validator: (value) {
-                                            if (value!.isEmpty ||
-                                                value == null) {
-                                              return 'Please enter your first name';
-                                            }
-                                            return null;
-                                          },
                                         ),
                                       ),
                                       SizedBox(width: 10),
@@ -219,13 +222,6 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                           controller: _lastNameController,
                                           label: "Last Name",
                                           prefixIcon: Icons.person,
-                                          validator: (value) {
-                                            if (value!.isEmpty ||
-                                                value == null) {
-                                              return 'Please enter your last name';
-                                            }
-                                            return null;
-                                          },
                                         ),
                                       ),
                                     ],
@@ -235,26 +231,14 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                     controller: _emailController,
                                     label: "Email",
                                     prefixIcon: Icons.email,
-                                    validator: (value) {
-                                      if (value!.isEmpty || value == null) {
-                                        return 'Please enter your email';
-                                      }
-                                      return null;
-                                    },
                                   ),
                                   SizedBox(width: 16),
                                   CustomTextField(
                                     controller: _phoneController,
                                     label: "Phone",
                                     prefixIcon: Icons.phone,
-                                    validator: (value) {
-                                      if (value!.isEmpty || value == null) {
-                                        return 'Please enter your phone number';
-                                      }
-                                      return null;
-                                    },
                                   ),
-                                  SizedBox(width: 20),
+                                  SizedBox(height: 20),
                                   Text(
                                     "More Information",
                                     style: TextStyle(
@@ -268,17 +252,10 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                     controller: _dobController,
                                     label: "Date of Birth",
                                     prefixIcon: Icons.calendar_today,
-                                    validator: (value) {
-                                      if (value!.isEmpty || value == null) {
-                                        return 'Please enter date of birth';
-                                      }
-                                      return null;
-                                    },
                                   ),
                                   SizedBox(height: 16),
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Gender",
@@ -289,67 +266,25 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                                         ),
                                       ),
                                       SizedBox(height: 8),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.primaryColor.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(
-                                            color: AppTheme.primaryColor,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.all(8), // Add padding for better spacing
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Evenly space the radio buttons
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: 'Male',
-                                                    groupValue: _selectedGender,
-                                                    activeColor: AppTheme.primaryColor,
-                                                    onChanged: (String? value) {
-                                                      setState(() {
-                                                        _selectedGender = value!;
-                                                      });
-                                                    },
-                                                  ),
-                                                  Text("Male"),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: 'Female',
-                                                    groupValue: _selectedGender,
-                                                    activeColor: AppTheme.primaryColor,
-                                                    onChanged: (String? value) {
-                                                      setState(() {
-                                                        _selectedGender = value!;
-                                                      });
-                                                    },
-                                                  ),
-                                                  Text("Female"),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Radio<String>(
-                                                    value: 'Other',
-                                                    groupValue: _selectedGender,
-                                                    activeColor: AppTheme.primaryColor,
-                                                    onChanged: (String? value) {
-                                                      setState(() {
-                                                        _selectedGender = value!;
-                                                      });
-                                                    },
-                                                  ),
-                                                  Text("Other"),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: ["Male", "Female", "Other"]
+                                            .map((gender) => Row(
+                                          children: [
+                                            Radio<String>(
+                                              value: gender,
+                                              groupValue: _selectedGender,
+                                              activeColor: AppTheme.primaryColor,
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  _selectedGender = value!;
+                                                });
+                                              },
+                                            ),
+                                            Text(gender),
+                                          ],
+                                        ))
+                                            .toList(),
                                       ),
                                     ],
                                   ),

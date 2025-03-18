@@ -1,3 +1,6 @@
+import 'package:deal_hub/screens/profile_screen/profile_widgets/build_action_card.dart';
+import 'package:deal_hub/screens/profile_screen/profile_widgets/build_menu_Item.dart';
+import 'package:deal_hub/screens/profile_screen/profile_widgets/build_section.dart';
 import 'package:deal_hub/screens/profile_screen/user_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,148 +14,6 @@ import '../setting/choose_language_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
-
-  Widget _buildActionCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color color,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: color),
-            SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                color: AppTheme.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSection({required String title, required List<Widget> items}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textPrimary,
-            ),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.05), offset: Offset(0, 5)),
-            ],
-          ),
-          child: Column(
-            children: items,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-    required Color color,
-    bool isDestructive = false,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                color: isDestructive
-                    ? AppTheme.error.withOpacity(0.1)
-                    : color.withOpacity(0.1),
-              ),
-              child: Icon(
-                icon,
-                color: isDestructive ? AppTheme.error : color,
-                size: 24,
-              ),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color:
-                          isDestructive ? AppTheme.error : AppTheme.textPrimary,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppTheme.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              color: AppTheme.textSecondary,
-              size: 20,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -293,21 +154,21 @@ class ProfileScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 24),
                       child: Row(
                         children: [
-                          _buildActionCard(
+                          buildActionCard(
                             icon: Icons.shopping_bag_outlined,
                             title: 'Orders',
                             value: '12',
                             color: AppTheme.primaryColor,
                           ),
                           SizedBox(width: 12),
-                          _buildActionCard(
+                          buildActionCard(
                             icon: Icons.favorite_border_outlined,
                             title: 'Wishlist',
                             value: '8',
                             color: AppTheme.secondaryColor,
                           ),
                           SizedBox(width: 12),
-                          _buildActionCard(
+                          buildActionCard(
                             icon: Icons.local_shipping_outlined,
                             title: 'Shipping',
                             value: '2',
@@ -321,10 +182,10 @@ class ProfileScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 24),
                       child: Column(
                         children: [
-                          _buildSection(
+                          buildSection(
                             title: "Shopping Preferences",
                             items: [
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.shopping_bag_outlined,
                                 title: 'My Orders',
                                 subtitle: "View your order history",
@@ -333,14 +194,14 @@ class ProfileScreen extends StatelessWidget {
                                 },
                                 color: AppTheme.secondaryColor,
                               ),
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.location_on_outlined,
                                 title: 'Shipping Address',
                                 subtitle: "Manage your delivery addresses",
                                 onTap: () {},
                                 color: AppTheme.secondaryColor,
                               ),
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.payment_outlined,
                                 title: 'Payment Methods',
                                 subtitle: "Manage your payment options",
@@ -350,10 +211,10 @@ class ProfileScreen extends StatelessWidget {
                             ],
                           ),
                           SizedBox(height: 24),
-                          _buildSection(
+                          buildSection(
                             title: "Account Settings",
                             items: [
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.person_outline,
                                 title: 'Personal Details',
                                 subtitle: "Update your personal information",
@@ -362,14 +223,14 @@ class ProfileScreen extends StatelessWidget {
                                 },
                                 color: AppTheme.primaryColor,
                               ),
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.lock_outline,
                                 title: 'Change Password',
                                 subtitle: "Update your password",
                                 onTap: () {},
                                 color: AppTheme.primaryColor,
                               ),
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.notifications,
                                 title: 'Notifications',
                                 subtitle: "Manage your notifications",
@@ -381,10 +242,10 @@ class ProfileScreen extends StatelessWidget {
                             ],
                           ),
                           SizedBox(height: 24),
-                          _buildSection(
+                          buildSection(
                             title: "More",
                             items: [
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.settings_outlined,
                                 title: 'Settings',
                                 subtitle: "App settings and preferences",
@@ -393,21 +254,21 @@ class ProfileScreen extends StatelessWidget {
                                 },
                                 color: AppTheme.tertiaryColor,
                               ),
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.help_outline,
                                 title: 'Help & Support',
                                 subtitle: "Get help and support",
                                 onTap: () {},
                                 color: AppTheme.tertiaryColor,
                               ),
-                              _buildMenuItem(
+                              buildMenuItem(
                                 icon: Icons.error_outline,
                                 title: 'About',
                                 subtitle: "Get to Know Us!",
                                 onTap: () {},
                                 color: AppTheme.tertiaryColor,
                               ),
-                              _buildMenuItem(
+                              buildMenuItem(
                                   icon: Icons.logout,
                                   title: 'Logout',
                                   subtitle: "Sign out of your account",

@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:deal_hub/theme/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'authentication/firebase_const.dart';
+import 'main_screen.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -70,11 +73,14 @@ class _SplashScreenState extends State<SplashScreen>
             _loadingProgress = 1.0;
             _progressTimer?.cancel();
 
-
             Future.delayed(const Duration(milliseconds: 200), () {
-              if (mounted) {
-                Get.offAll(() => OnboardingScreen());
-              }
+              auth.authStateChanges().listen((User? user) {
+                if (user == null && mounted) {
+                  Get.to(() => OnboardingScreen());
+                } else {
+                  Get.offAll(() => MainScreen());
+                }
+              });
             });
           }
         }
