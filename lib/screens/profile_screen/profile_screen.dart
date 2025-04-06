@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:deal_hub/screens/profile_screen/personal_details_screen.dart';
 import 'package:deal_hub/services/firestore_services.dart';
 import '../../theme/theme.dart';
 import '../../controllers/auth_controller.dart';
+import '../authentication/change_password_screen.dart';
 import '../cart_screen/my_order_screen.dart';
 import '../help_suppor_about/about_screen.dart';
 import '../help_suppor_about/help_and_support_screen.dart';
@@ -25,8 +25,9 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = FirebaseAuth.instance.currentUser;
+    Get.put(ProfileController());
     var controller = Get.find<ProfileController>();
+    var currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
@@ -76,7 +77,9 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(() => PersonalDetailsScreen());
+                          },
                           icon: Icon(Icons.more_vert, color: Colors.white),
                         ),
                       ],
@@ -123,7 +126,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                             );
                           }
-                          var data = snapshot.data!.docs[0];
+                          var data = snapshot.data!.docs[0].data() as Map<String, dynamic>;
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -134,18 +137,19 @@ class ProfileScreen extends StatelessWidget {
                                 width: 100,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(80),
-                                  child: Obx(() {
-                                    if (controller
-                                        .profileImgPath.value.isNotEmpty) {
-                                      return Image.file(
-                                        File(controller.profileImgPath.value),
-                                        fit: BoxFit.cover,
-                                      );
-                                    } else {
-                                      return Image.asset(
-                                          'assets/images/profile.JPG');
-                                    }
-                                  }),
+                                  child: data['profileImage'] != null && data['profileImage'].toString().isNotEmpty
+                                      ? Image.network(
+                                    data['profileImage'],
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  )
+                                      : Image.asset(
+                                    'assets/images/profile.JPG',
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -295,7 +299,9 @@ class ProfileScreen extends StatelessWidget {
                                 icon: Icons.lock_outline,
                                 title: 'Change Password',
                                 subtitle: "Update your password",
-                                onTap: () {},
+                                onTap: () {
+                                  Get.to(() => ChangePasswordScreen());
+                                },
                                 color: AppTheme.primaryColor,
                               ),
                               buildMenuItem(
@@ -327,7 +333,7 @@ class ProfileScreen extends StatelessWidget {
                                 title: 'Help & Support',
                                 subtitle: "Get help and support",
                                 onTap: () {
-                                  Get.to(()=> HelpAndSupportScreen());
+                                  Get.to(() => HelpAndSupportScreen());
                                 },
                                 color: AppTheme.tertiaryColor,
                               ),

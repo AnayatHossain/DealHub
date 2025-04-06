@@ -1,10 +1,8 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../services/firestore_services.dart';
 import '../../../theme/theme.dart';
 import '../../../controllers/profile_controller.dart';
@@ -27,12 +25,11 @@ class UseerProfileData extends StatelessWidget {
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
               ),
             );
           }
-          var data = snapshot.data!.docs[0];
+          var data = snapshot.data!.docs[0].data() as Map<String, dynamic>;
           return Row(
             children: [
               CircleAvatar(
@@ -43,18 +40,19 @@ class UseerProfileData extends StatelessWidget {
                   width: 100,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(80),
-                    child: Obx(() {
-                      if (controller
-                          .profileImgPath.value.isNotEmpty) {
-                        return Image.file(
-                          File(controller.profileImgPath.value),
-                          fit: BoxFit.cover,
-                        );
-                      } else {
-                        return Image.asset(
-                            'assets/images/profile.JPG');
-                      }
-                    }),
+                    child: data['profileImage'] != null && data['profileImage'].toString().isNotEmpty
+                        ? Image.network(
+                      data['profileImage'],
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                    )
+                        : Image.asset(
+                      'assets/images/profile.JPG',
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

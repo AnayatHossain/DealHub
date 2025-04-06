@@ -1,14 +1,10 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:deal_hub/controllers/profile_controller.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../services/firestore_services.dart';
 import '../../theme/theme.dart';
 import 'edit_personal_details_screen.dart';
@@ -194,9 +190,8 @@ class PersonalDetailsScreen extends StatelessWidget {
                           );
                         }
 
-                        var data = snapshot.data!.docs[0];
+                        var data = snapshot.data!.docs[0].data() as Map<String, dynamic>;
 
-                        // ✅ Function to convert Timestamp to formatted string
                         String formatDate(dynamic timestamp) {
                           if (timestamp is Timestamp) {
                             return DateFormat('dd MMM yyyy')
@@ -227,18 +222,19 @@ class PersonalDetailsScreen extends StatelessWidget {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(80),
-                                  child: Obx(() {
-                                    if (controller
-                                        .profileImgPath.value.isNotEmpty) {
-                                      return Image.file(
-                                        File(controller.profileImgPath.value),
-                                        fit: BoxFit.cover,
-                                      );
-                                    } else {
-                                      return Image.asset(
-                                          'assets/images/profile.JPG');
-                                    }
-                                  }),
+                                  child: data['profileImage'] != null && data['profileImage'].toString().isNotEmpty
+                                      ? Image.network(
+                                    data['profileImage'],
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  )
+                                      : Image.asset(
+                                    'assets/images/profile.JPG',
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),

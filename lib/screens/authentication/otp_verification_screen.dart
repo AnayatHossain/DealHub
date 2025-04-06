@@ -1,12 +1,14 @@
-import 'package:deal_hub/theme/theme.dart';
+import 'package:deal_hub/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
+import '../../theme/theme.dart';
 import '../../widgets/gradient_button.dart';
+import 'login_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({super.key});
+  final String email;
+  const OtpVerificationScreen({super.key, required this.email});
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -16,9 +18,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final int otpLength = 6;
   final List<TextEditingController> _controllers = [];
   final List<FocusNode> _focusNodes = [];
-
   int _resendTimer = 30;
-  bool _canRecend = false;
+  bool _canResend = false;
   bool _isVerifying = false;
 
   @override
@@ -39,25 +40,39 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           _resendTimer--;
           _startResendTimer();
         } else {
-          _canRecend = true;
+          _canResend = true;
         }
       });
     });
   }
 
-  //here otp verification will be implemented
-
-  void _verifyOtp() {
+  Future<void> _verifyOtp() async {
     String otp = _controllers.map((controller) => controller.text).join();
     if (otp.length == otpLength) {
       setState(() => _isVerifying = true);
-      Future.delayed(
-        Duration(seconds: 2),
-            () {
-          if (!mounted) return;
-        },
-      );
+      try {
+        await Get.find<AuthController>().verifyPasswordReset(
+          widget.email,
+          otp,
+          Get.context!,
+        );
+        Get.offAll(() => LoginScreen());
+      } finally {
+        setState(() => _isVerifying = false);
+      }
     }
+  }
+
+  Future<void> _resendOtp() async {
+    setState(() {
+      _canResend = false;
+      _resendTimer = 30;
+    });
+    _startResendTimer();
+    await Get.find<AuthController>().sendPasswordResetEmail(
+      widget.email,
+      Get.context!,
+    );
   }
 
   @override
@@ -68,7 +83,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     for (var focusNode in _focusNodes) {
       focusNode.dispose();
     }
-
     super.dispose();
   }
 
@@ -96,14 +110,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             children: [
               Text(
                 "Verify Email",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .displayLarge,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
               SizedBox(height: 8),
               Text(
-                "Enter the OTP sent to your email",
+                "Enter the OTP sent to ${widget.email}",
                 style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
               ),
               SizedBox(height: 48),
@@ -111,49 +122,48 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
                   otpLength,
-                      (index) =>
-                      SizedBox(
-                        width: 50,
-                        child: TextField(
-                          controller: _controllers[index],
-                          focusNode: _focusNodes[index],
-                          keyboardType: TextInputType.number,
-                          maxLength: 1,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 24),
-                          decoration: InputDecoration(
-                            counterText: "",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: AppTheme.textSecondary.withOpacity(0.3),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: AppTheme.primaryColor,
-                                width: 2,
-                              ),
-                            ),
+                      (index) => SizedBox(
+                    width: 50,
+                    child: TextField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      keyboardType: TextInputType.number,
+                      maxLength: 1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 24),
+                      decoration: InputDecoration(
+                        counterText: "",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: AppTheme.textSecondary.withOpacity(0.3),
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          onChanged: (value) {
-                            if (value.isNotEmpty) {
-                              if (index < otpLength - 1) {
-                                _focusNodes[index + 1].requestFocus();
-                              } else {
-                                _focusNodes[index].unfocus();
-                                _verifyOtp();
-                              }
-                            } else if (index > 0) {
-                              _focusNodes[index - 1].requestFocus();
-                            }
-                          },
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: AppTheme.primaryColor,
+                            width: 2,
+                          ),
                         ),
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          if (index < otpLength - 1) {
+                            _focusNodes[index + 1].requestFocus();
+                          } else {
+                            _focusNodes[index].unfocus();
+                            _verifyOtp();
+                          }
+                        } else if (index > 0) {
+                          _focusNodes[index - 1].requestFocus();
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 16),
@@ -171,28 +181,20 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                     SizedBox(width: 4),
                     TextButton(
-                      onPressed: _canRecend ? () {
-                        setState(() {
-                          _canRecend = false;
-                          _resendTimer = 30;
-                        });
-                        _startResendTimer();
-                      } : null,
+                      onPressed: _canResend ? _resendOtp : null,
                       child: Text(
-                        _canRecend ? "Resend Code" : " Resend Code in $_resendTimer sec",
+                        _canResend ? "Resend Code" : "Resend in $_resendTimer sec",
                         style: TextStyle(
-                          color: _canRecend
+                          color: _canResend
                               ? AppTheme.primaryColor
                               : AppTheme.textSecondary,
                         ),
                       ),
-
                     )
-
                   ],
                 ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 24),
               GradientButton(
                 text: _isVerifying ? "Verifying..." : "Verify",
                 onPressed: () {
@@ -201,7 +203,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   }
                 },
               ),
-              SizedBox(height: 24),
             ],
           ),
         ),

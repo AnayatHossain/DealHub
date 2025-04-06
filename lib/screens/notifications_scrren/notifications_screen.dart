@@ -1,6 +1,8 @@
+import 'package:deal_hub/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/auth_controller.dart';
 import '../../data/data.dart';
 import '../../theme/theme.dart';
 

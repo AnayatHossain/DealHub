@@ -37,11 +37,7 @@ class WelcomeScreen extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(
-                          Icons.shopping_bag_outlined,
-                          size: 32,
-                          color: AppTheme.primaryColor,
-                        ),
+                        child: Image.asset('assets/icons/dealhub_logo_1.png', width: 50, height: 50),
                       ),
                       SizedBox(width: 12),
                       Text(

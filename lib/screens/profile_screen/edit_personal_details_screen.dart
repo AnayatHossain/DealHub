@@ -17,7 +17,6 @@ class EditPersonalDetailsScreen extends StatefulWidget {
 
 class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
-
   var controller = Get.find<ProfileController>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -27,7 +26,7 @@ class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
   String _selectedGender = 'None';
 
   var currentUser = FirebaseAuth.instance.currentUser;
-  bool _isSaving = false;// To track if the save operation is in progress
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -48,11 +47,13 @@ class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
       String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
 
       setState(() {
-        _firstNameController.text = firstName; // Set first name
-        _lastNameController.text = lastName;  // Set last name
+        _firstNameController.text = firstName;
+        _lastNameController.text = lastName;
         _emailController.text = data['email'] ?? '';
         _phoneController.text = data['phone'] ?? '';
-        _dobController.text = data['dob'] != null ? DateFormat('dd MMM yyyy').format((data['dob'] as Timestamp).toDate()) : '';
+        _dobController.text = data['dob'] != null
+            ? DateFormat('dd MMM yyyy').format((data['dob'] as Timestamp).toDate())
+            : '';
         _selectedGender = data['gender'] ?? 'None';
       });
     }
@@ -61,26 +62,29 @@ class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
   Future<void> _updateUserData() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isSaving = true; // Start the saving process
+        _isSaving = true;
       });
 
       try {
-        // Combine first name and last name into full name
-        String fullName = '${_firstNameController.text} ${_lastNameController.text}';
+        // Upload image if it's a new one
+        String imgUrl = controller.profileImgPath.value;
+        if (imgUrl.isNotEmpty && !imgUrl.startsWith('http')) {
+          await controller.uploadProfileImage(File(imgUrl));
+          imgUrl = controller.profileImgUrl.value;
+        }
 
         // Update the user data in Firestore
-        await FirebaseFirestore.instance.collection('users').doc(currentUser!.uid).update({
-          'name': fullName, // Save full name
-          'email': _emailController.text,
-          'phone': _phoneController.text,
-          'dob': _dobController.text.isNotEmpty ? Timestamp.fromDate(DateFormat('dd MMM yyyy').parse(_dobController.text)) : null,
-          'gender': _selectedGender,
-        });
+        await controller.updateProfile(
+          '${_firstNameController.text} ${_lastNameController.text}',
+          _emailController.text,
+          _phoneController.text,
+          _dobController.text,
+          _selectedGender,
+          imgUrl,
+        );
 
-        // If the update is successful, navigate back
         Get.back();
       } catch (e) {
-        // Handle any errors that occur during the update
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to update data: $e'),
@@ -89,7 +93,7 @@ class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
         );
       } finally {
         setState(() {
-          _isSaving = false; // Stop the saving process
+          _isSaving = false;
         });
       }
     }
@@ -163,7 +167,7 @@ class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
                         ),
                       ),
                       _isSaving
-                          ? CircularProgressIndicator(color: Colors.white) // Show loading indicator
+                          ? CircularProgressIndicator(color: Colors.white)
                           : TextButton(
                         onPressed: _updateUserData,
                         child: Text(
@@ -228,8 +232,15 @@ class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
                                   borderRadius: BorderRadius.circular(80),
                                   child: Obx(
                                         () => controller.profileImgPath.value.isNotEmpty
-                                        ?  Image.file(
-                                          File(controller.profileImgPath.value),
+                                        ? controller.profileImgPath.value.startsWith('http')
+                                        ? Image.network(
+                                      controller.profileImgPath.value,
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Image.file(
+                                      File(controller.profileImgPath.value),
                                       width: 80,
                                       height: 80,
                                       fit: BoxFit.cover,
@@ -327,10 +338,25 @@ class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
                                     ),
                                   ),
                                   SizedBox(height: 24),
-                                  CustomTextField(
-                                    controller: _dobController,
-                                    label: "Date of Birth",
-                                    prefixIcon: Icons.calendar_today,
+                                  GestureDetector(
+                                    onTap: () async {
+                                      final DateTime? picked = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime.now(),
+                                      );
+                                      if (picked != null) {
+                                        _dobController.text = DateFormat('dd MMM yyyy').format(picked);
+                                      }
+                                    },
+                                    child: AbsorbPointer(
+                                      child: CustomTextField(
+                                        controller: _dobController,
+                                        label: "Date of Birth",
+                                        prefixIcon: Icons.calendar_today,
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(height: 16),
                                   Column(

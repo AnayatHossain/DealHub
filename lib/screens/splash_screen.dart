@@ -54,10 +54,7 @@ class _SplashScreenState extends State<SplashScreen>
       const Duration(seconds: 3),
           () {
         if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-          );
+              Get.to(() => OnboardingScreen());
         }
       },
     );
@@ -154,11 +151,7 @@ class _SplashScreenState extends State<SplashScreen>
                                     ),
                                   ],
                                 ),
-                                child: const Icon(
-                                  Icons.shopping_bag_outlined,
-                                  size: 64,
-                                  color: AppTheme.primaryColor,
-                                ),
+                                child: Image.asset('assets/icons/dealhub_logo_1.png', width: 80, height: 80),
                               ),
                             );
                           },

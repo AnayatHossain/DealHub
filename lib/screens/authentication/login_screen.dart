@@ -4,7 +4,6 @@ import 'package:deal_hub/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
-
 import '../../theme/theme.dart';
 import '../../widgets/social_login_button.dart';
 import '../main_screen.dart';
