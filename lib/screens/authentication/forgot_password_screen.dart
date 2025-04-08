@@ -1,8 +1,9 @@
-import 'package:deal_hub/widgets/custom_text_field.dart';
+// File: forgot_password_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:deal_hub/controllers/auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 import '../../theme/theme.dart';
+import '../../widgets/custom_text_field.dart';
 import '../../widgets/gradient_button.dart';
 import 'login_screen.dart';
 import 'otp_verification_screen.dart';
@@ -25,17 +26,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  Future<void> _recoverPassword() async {
+  Future<void> _sendOtp() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
-        await Get.find<AuthController>().sendPasswordResetEmail(
+        await Get.find<AuthController>().sendOtpToEmail(
           _emailController.text.trim(),
-          Get.context!,
+          context,
         );
-        Get.to(() => OtpVerificationScreen(
-          email: _emailController.text.trim(),
-        ));
+        // Navigate to Login screen after successfully sending the email
+        Get.to(() => const LoginScreen());
+      } catch (e) {
+        Get.snackbar(
+          "Error",
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
       } finally {
         if (mounted) {
           setState(() => _isLoading = false);
@@ -60,7 +66,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -68,12 +74,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 "Forgot Password?",
                 style: Theme.of(context).textTheme.displayLarge,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
-                "Enter your email to recover your password",
+                "Enter your email to receive OTP",
                 style: TextStyle(color: AppTheme.textSecondary, fontSize: 16),
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               Form(
                 key: _formKey,
                 child: Column(
@@ -87,28 +93,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
                         }
-                        if (!value.contains('@')) {
+                        if (!GetUtils.isEmail(value)) {
                           return 'Please enter a valid email';
                         }
                         return null;
                       },
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     GradientButton(
-                      text: _isLoading ? "Sending..." : "Recover Password",
-                      onPressed: () {
-                        if (!_isLoading) {
-                          _recoverPassword();
-                          Get.to(() => OtpVerificationScreen(
-                            email: _emailController.text.trim(),
-                          ));
-                        }
-                      },
+                      text: _isLoading ? "Sending..." : "Get New Password",
+                      onPressed: _isLoading ? null : _sendOtp,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Center(
                       child: TextButton(
-                        onPressed: () => Get.to(() => LoginScreen()),
+                        onPressed: () => Get.to(() => const LoginScreen()),
                         child: Text(
                           "Back to Login",
                           style: TextStyle(

@@ -1,10 +1,11 @@
-import 'package:deal_hub/controllers/auth_controller.dart';
+// File: otp_verification_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../../controllers/auth_controller.dart';
 import '../../theme/theme.dart';
 import '../../widgets/gradient_button.dart';
-import 'login_screen.dart';
+import 'new_password_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String email;
@@ -33,7 +34,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   void _startResendTimer() {
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       if (!mounted) return;
       setState(() {
         if (_resendTimer > 0) {
@@ -51,12 +52,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     if (otp.length == otpLength) {
       setState(() => _isVerifying = true);
       try {
-        await Get.find<AuthController>().verifyPasswordReset(
-          widget.email,
+        await Get.find<AuthController>().verifyOtp(
           otp,
-          Get.context!,
+          context,
         );
-        Get.offAll(() => LoginScreen());
+        Get.to(() => NewPasswordScreen(email: widget.email));
+      } catch (e) {
+        Get.snackbar(
+          "Error",
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
       } finally {
         setState(() => _isVerifying = false);
       }
@@ -69,9 +75,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       _resendTimer = 30;
     });
     _startResendTimer();
-    await Get.find<AuthController>().sendPasswordResetEmail(
+    await Get.find<AuthController>().sendOtpToEmail(
       widget.email,
-      Get.context!,
+      context,
     );
   }
 
@@ -93,9 +99,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
+          onPressed: Get.back,
           icon: Icon(
             Icons.arrow_back,
             color: AppTheme.textPrimary,
@@ -104,20 +108,20 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Verify Email",
+                "Verify OTP",
                 style: Theme.of(context).textTheme.displayLarge,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 "Enter the OTP sent to ${widget.email}",
                 style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
@@ -130,7 +134,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       keyboardType: TextInputType.number,
                       maxLength: 1,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24),
+                      style: const TextStyle(fontSize: 24),
                       decoration: InputDecoration(
                         counterText: "",
                         border: OutlineInputBorder(
@@ -166,7 +170,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,7 +183,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         fontSize: 14,
                       ),
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     TextButton(
                       onPressed: _canResend ? _resendOtp : null,
                       child: Text(
@@ -194,14 +198,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               GradientButton(
                 text: _isVerifying ? "Verifying..." : "Verify",
-                onPressed: () {
-                  if (!_isVerifying) {
-                    _verifyOtp();
-                  }
-                },
+                onPressed: _isVerifying ? null : _verifyOtp,
               ),
             ],
           ),

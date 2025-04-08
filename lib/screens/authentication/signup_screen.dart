@@ -27,6 +27,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var passwordConfirmController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -172,8 +174,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 controller: passwordController,
                                 label: "Password",
                                 prefixIcon: Icons.lock,
-                                keyboardType: TextInputType.visiblePassword,
-                                isPassword: true,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: AppTheme.primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
+                                isPassword: _obscurePassword,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter your password';
@@ -189,8 +203,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 controller: passwordConfirmController,
                                 label: "Confirm Password",
                                 prefixIcon: Icons.lock,
-                                keyboardType: TextInputType.visiblePassword,
-                                isPassword: true,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureConfirmPassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: AppTheme.primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                    });
+                                  },
+                                ),
+                                isPassword: _obscureConfirmPassword,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please confirm your password';

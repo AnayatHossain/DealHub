@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import '../../theme/theme.dart';
 import '../notifications_scrren/notifications_screen.dart';
+import '../profile_screen/personal_details_screen.dart';
 import 'model/new_arivals_section.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -40,7 +41,12 @@ class HomeScreen extends StatelessWidget {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.center,
-                    child: UseerProfileData(),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => PersonalDetailsScreen());
+                      },
+                        child: UseerProfileData(),
+                    ),
                   ),
                 ),
 

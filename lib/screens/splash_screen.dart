@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:deal_hub/theme/theme.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'authentication/firebase_const.dart';
 import 'main_screen.dart';
 import 'onboarding_screen.dart';
@@ -20,14 +18,17 @@ class _SplashScreenState extends State<SplashScreen>
   late final AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
-
   double _loadingProgress = 0.0;
   Timer? _progressTimer;
 
   @override
   void initState() {
     super.initState();
+    _initializeAnimations();
+    _startLoadingProgress();
+  }
 
+  void _initializeAnimations() {
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -48,45 +49,42 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
-    _startLoadingProgress();
-
-    Timer(
-      const Duration(seconds: 3),
-          () {
-        if (mounted) {
-              Get.to(() => OnboardingScreen());
-        }
-      },
-    );
   }
+
   void _startLoadingProgress() {
     const totalSteps = 100;
     const stepDuration = Duration(milliseconds: 28);
+
     _progressTimer = Timer.periodic(stepDuration, (timer) {
+      if (!mounted) return;
+
       setState(() {
         if (_loadingProgress < 1.0) {
           _loadingProgress += 1.0 / totalSteps;
+
           if (_loadingProgress >= 0.99) {
             _loadingProgress = 1.0;
             _progressTimer?.cancel();
-
-            Future.delayed(Duration(milliseconds: 200), () {
-              auth.authStateChanges().listen((User? user) {
-                if (user == null && mounted) {
-                  Get.to(() => OnboardingScreen());
-                } else {
-                  Get.offAll(() => MainScreen());
-                }
-              });
-            });
+            _checkAuthAndNavigate();
           }
         }
       });
     });
   }
 
+  Future<void> _checkAuthAndNavigate() async {
+    await Future.delayed(const Duration(milliseconds: 200));
 
+    if (!mounted) return;
 
+    final currentUser = auth.currentUser;
+
+    if (currentUser != null) {
+      Get.offAll(() => const MainScreen());
+    } else {
+      Get.offAll(() => const OnboardingScreen());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +105,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: Container(
                 width: 200,
                 height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -119,8 +117,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: Container(
                 width: 150,
                 height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -151,43 +149,42 @@ class _SplashScreenState extends State<SplashScreen>
                                     ),
                                   ],
                                 ),
-                                child: Image.asset('assets/icons/dealhub_logo_1.png', width: 80, height: 80),
+                                child: Image.asset(
+                                  'assets/icons/dealhub_logo_1.png',
+                                  width: 80,
+                                  height: 80,
+                                ),
                               ),
                             );
                           },
                         ),
                         const SizedBox(height: 8),
-                        AnimatedBuilder(
-                          animation: _controller,
-                          builder: (context, child) {
-                            return FadeTransition(
-                              opacity: _fadeAnimation,
-                              child: Column(
-                                children: [
-                                  const Text(
-                                    "DealHub",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 40,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.2,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  const Text(
-                                    textAlign: TextAlign.center,
-                                    "A social shopping platform with \n group-buying discounts.",
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Column(
+                            children: const [
+                              Text(
+                                "DealHub",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.2,
+                                ),
                               ),
-                            );
-                          },
+                              SizedBox(height: 4),
+                              Text(
+                                textAlign: TextAlign.center,
+                                "A social shopping platform with \n group-buying discounts.",
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 48),
                         Text(
@@ -205,7 +202,8 @@ class _SplashScreenState extends State<SplashScreen>
                             borderRadius: BorderRadius.circular(10),
                             child: LinearProgressIndicator(
                               value: _loadingProgress,
-                              backgroundColor: Colors.white.withOpacity(0.2),
+                              backgroundColor:
+                              const Color.fromRGBO(255, 255, 255, 0.2),
                               valueColor: const AlwaysStoppedAnimation<Color>(
                                 Colors.white,
                               ),
@@ -216,7 +214,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Column(
                     children: [
@@ -231,7 +229,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       SizedBox(height: 5),
                       Text(
-                        "Anayat Hossain All rights reserved.",
+                        "© Anayat Hossain. All rights reserved.",
                         style: TextStyle(
                           color: Colors.white70,
                           fontSize: 14,

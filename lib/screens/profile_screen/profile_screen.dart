@@ -351,8 +351,7 @@ class ProfileScreen extends StatelessWidget {
                                 title: 'Logout',
                                 subtitle: "Sign out of your account",
                                 onTap: () async {
-                                  await Get.find<AuthController>()
-                                      .signoutMethod(context);
+                                  await Get.find<AuthController>().signoutMethod(context);
                                   Get.offAll(() => OnboardingScreen());
                                 },
                                 color: AppTheme.error,

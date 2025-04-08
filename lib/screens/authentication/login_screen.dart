@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var controller = Get.put(AuthController());
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +157,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                   controller: passwordController,
                                   label: "Password",
                                   prefixIcon: Icons.lock,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  isPassword: true,
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: AppTheme.primaryColor,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
+                                  ),
+                                  isPassword: _obscurePassword,
+
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter your password';

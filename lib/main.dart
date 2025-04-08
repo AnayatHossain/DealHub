@@ -1,27 +1,33 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:deal_hub/controllers/auth_controller.dart';
+import 'package:deal_hub/controllers/profile_controller.dart';
+import 'package:deal_hub/screens/splash_screen.dart';
+import 'package:deal_hub/theme/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-
-import 'app.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-    // options: FirebaseOptions(
-    //     apiKey: "AIzaSyDFHLmbPqsOK4UHRklSoXSNXC78ZbidyYQ",
-    //     projectId: "dealhub-b6f03",
-    //     messagingSenderId: "227342535608",
-    //     appId: "1:227342535608:web:e7bcfd0237d85fa646dd4d",
-    // ),
-  );
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.dark,
-    )
-  );
-  runApp(DealHub());
+  await Firebase.initializeApp();
+  await SharedPreferences.getInstance(); // Initialize SharedPreferences
+  runApp(const DealHub());
+}
+
+class DealHub extends StatelessWidget {
+  const DealHub({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: 'DealHub',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      home: const SplashScreen(),
+      initialBinding: BindingsBuilder(() {
+        Get.lazyPut(() => ProfileController());
+        Get.put(AuthController());
+      }),
+    );
+  }
 }
